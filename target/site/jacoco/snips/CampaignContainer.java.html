@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CampaignContainer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">snips</a> &gt; <a href="index.source.html" class="el_package">snips</a> &gt; <span class="el_source">CampaignContainer.java</span></div><h1>CampaignContainer.java</h1><pre class="source lang-java linenums">package snips;
+
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class CampaignContainer
+{
+    public final List&lt;BiddingStrategyContainer&gt; biddingStrategyContainers;
+    public final String name;
+
+    public CampaignContainer(String name)
+<span class="fc" id="L15">    {</span>
+<span class="fc" id="L16">        biddingStrategyContainers = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L17">        this.name = name;</span>
+<span class="fc" id="L18">    }</span>
+    public BiddingStrategyContainer associateBiddingStrategy(String biddingStrategy)
+    {
+        BiddingStrategyContainer $biddingStrategyContainer;
+<span class="fc" id="L22">        final Optional&lt;BiddingStrategyContainer&gt;biddingStrategyContainer =</span>
+<span class="fc" id="L23">                biddingStrategyContainers.stream().filter((container)-&gt;biddingStrategy.equals(container.name)).findFirst();</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if(biddingStrategyContainer.isPresent()){</span>
+<span class="fc" id="L25">            $biddingStrategyContainer = biddingStrategyContainer.get();</span>
+        }
+        else{
+<span class="fc" id="L28">            $biddingStrategyContainer = new BiddingStrategyContainer(biddingStrategy);</span>
+<span class="fc" id="L29">            biddingStrategyContainers.add($biddingStrategyContainer);</span>
+        }
+<span class="fc" id="L31">        return $biddingStrategyContainer;</span>
+    }
+
+    public String getBiddingStrategyWithTheMostAdGroups(){
+<span class="fc" id="L35">        final AtomicInteger count = new AtomicInteger(0);</span>
+<span class="fc" id="L36">        String strategy = null;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        for(BiddingStrategyContainer container : biddingStrategyContainers){</span>
+<span class="fc" id="L38">            final Integer size = container.adGroups.size();</span>
+<span class="fc" id="L39">            final String name = container.name;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            if(container.adGroups.size() &gt; count.get()){</span>
+<span class="fc" id="L41">                count.set(size);</span>
+<span class="fc" id="L42">                strategy = name;</span>
+            }
+<span class="fc" id="L44">        }</span>
+<span class="fc" id="L45">        return strategy;</span>
+    }
+    public CampaignContainer getAdGroupsThatDoNotBelongToBiddingStrategy(String biddingStrategy){
+<span class="fc" id="L48">        final CampaignContainer campaignContainer = new CampaignContainer(this.name);</span>
+<span class="fc" id="L49">        biddingStrategyContainers.stream().filter((container)-&gt;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">                !biddingStrategy.equals(container.name)).forEach((strategyContainer)-&gt;</span>
+<span class="fc" id="L51">                input(campaignContainer, strategyContainer));</span>
+<span class="fc" id="L52">        return campaignContainer;</span>
+    }
+
+    private void input(CampaignContainer campaignContainer, BiddingStrategyContainer strategyContainer)
+    {
+<span class="fc" id="L57">        final BiddingStrategyContainer biddingStrategyContainer = campaignContainer.associateBiddingStrategy(strategyContainer.name);</span>
+<span class="fc" id="L58">        strategyContainer.adGroups.forEach(biddingStrategyContainer.adGroups::add);</span>
+<span class="fc" id="L59">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

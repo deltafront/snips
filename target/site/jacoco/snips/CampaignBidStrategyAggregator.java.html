@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CampaignBidStrategyAggregator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">snips</a> &gt; <a href="index.source.html" class="el_package">snips</a> &gt; <span class="el_source">CampaignBidStrategyAggregator.java</span></div><h1>CampaignBidStrategyAggregator.java</h1><pre class="source lang-java linenums">package snips;
+
+import java.util.*;
+
+public class CampaignBidStrategyAggregator
+{
+    private final RowIndices rowIndices;
+    public CampaignBidStrategyAggregator(RowIndices rowIndices)
+<span class="fc" id="L9">    {</span>
+<span class="fc" id="L10">        this.rowIndices = rowIndices;</span>
+<span class="fc" id="L11">    }</span>
+    public CampaignBidStrategyAggregator(Integer campaignNameIndex, Integer bidStrategyNameIndex, Integer adGroupNameIndex)
+    {
+<span class="fc" id="L14">        this(new RowIndices(campaignNameIndex,bidStrategyNameIndex,adGroupNameIndex));</span>
+<span class="fc" id="L15">    }</span>
+
+
+    public CampaignBidStrategyAdGroupContainer createCampaignBidStrategyAdGroupAssociations(List&lt;List&lt;String&gt;&gt;dataRows)
+    {
+<span class="fc" id="L20">        final CampaignBidStrategyAdGroupContainer campaignBidStrategyAdGroupContainer = new CampaignBidStrategyAdGroupContainer();</span>
+<span class="fc" id="L21">        dataRows.forEach((dataRow)-&gt;{</span>
+<span class="fc" id="L22">            final RowValues rowValues = new RowValues(rowIndices,dataRow);</span>
+<span class="fc" id="L23">            addCampaignIfNotPresent(rowValues,campaignBidStrategyAdGroupContainer);</span>
+<span class="fc" id="L24">        });</span>
+<span class="fc" id="L25">        return campaignBidStrategyAdGroupContainer;</span>
+    }
+
+    private void addCampaignIfNotPresent(RowValues rowValues, CampaignBidStrategyAdGroupContainer container){
+<span class="fc" id="L29">        final CampaignContainer campaignContainer = container.addCampaign(rowValues.campaignName);</span>
+<span class="fc" id="L30">        associateCampaignWithBiddingStrategy(rowValues,campaignContainer);</span>
+<span class="fc" id="L31">    }</span>
+    private void associateCampaignWithBiddingStrategy(RowValues rowValues, CampaignContainer campaignContainer)
+    {
+<span class="fc" id="L34">        final BiddingStrategyContainer biddingStrategyContainer = campaignContainer.associateBiddingStrategy(rowValues.bidStrategyName);</span>
+<span class="fc" id="L35">        associateAdGroupWithBiddingStrategy(rowValues,biddingStrategyContainer);</span>
+<span class="fc" id="L36">    }</span>
+    private void associateAdGroupWithBiddingStrategy(RowValues rowValues, BiddingStrategyContainer biddingStrategyContainer){
+<span class="fc" id="L38">        biddingStrategyContainer.adGroups.add(rowValues.adGroupName);</span>
+<span class="fc" id="L39">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
